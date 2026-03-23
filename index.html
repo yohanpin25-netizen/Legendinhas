@@ -225,10 +225,10 @@ body{background:var(--bg);color:var(--brg);font-family:'Space Mono',monospace;he
       </div>
     </div>
     <div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap;">
-      <button data-fn="fecharEdit" style="background:#222;border:none;color:#888;font-family:'Space Mono',monospace;font-size:11px;padding:8px 14px;border-radius:4px;cursor:pointer;flex:1;">CANCELAR</button>
-      <button data-fn="inserirAntes" style="background:#1a1a2a;border:1px solid #448aff;color:#448aff;font-family:'Space Mono',monospace;font-size:11px;padding:8px 14px;border-radius:4px;cursor:pointer;flex:1;">+ ANTES</button>
-      <button data-fn="inserirDepois" style="background:#1a1a2a;border:1px solid #448aff;color:#448aff;font-family:'Space Mono',monospace;font-size:11px;padding:8px 14px;border-radius:4px;cursor:pointer;flex:1;">+ DEPOIS</button>
-      <button data-fn="salvarEdit" style="background:var(--gold);border:none;color:#000;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;padding:8px 14px;border-radius:4px;cursor:pointer;flex:1;">SALVAR</button>
+      <button onclick="window.fecharEdit()" style="background:#222;border:none;color:#888;font-family:'Space Mono',monospace;font-size:11px;padding:8px 14px;border-radius:4px;cursor:pointer;flex:1;">CANCELAR</button>
+      <button onclick="window.inserirAntes()" style="background:#1a1a2a;border:1px solid #448aff;color:#448aff;font-family:'Space Mono',monospace;font-size:11px;padding:8px 14px;border-radius:4px;cursor:pointer;flex:1;">+ ANTES</button>
+      <button onclick="window.inserirDepois()" style="background:#1a1a2a;border:1px solid #448aff;color:#448aff;font-family:'Space Mono',monospace;font-size:11px;padding:8px 14px;border-radius:4px;cursor:pointer;flex:1;">+ DEPOIS</button>
+      <button onclick="window.salvarEdit()" style="background:var(--gold);border:none;color:#000;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;padding:8px 14px;border-radius:4px;cursor:pointer;flex:1;">SALVAR</button>
     </div>
   </div>
 </div></div>
@@ -268,8 +268,8 @@ body{background:var(--bg);color:var(--brg);font-family:'Space Mono',monospace;he
       style="background:#0a0a0a;border:1px solid #448aff;color:#fff;font-family:'Space Mono',monospace;font-size:16px;padding:10px 14px;border-radius:4px;outline:none;width:100%;text-transform:uppercase;letter-spacing:1px;">
     <div id="key-preview" style="font-family:'Space Mono',monospace;font-size:10px;color:#448aff;min-height:14px;letter-spacing:1px;"></div>
     <div style="display:flex;gap:8px;justify-content:flex-end;">
-      <button data-fn="fecharKeyModal" style="background:#222;border:none;color:#888;font-family:'Space Mono',monospace;font-size:11px;padding:8px 16px;border-radius:4px;cursor:pointer;">CANCELAR</button>
-      <button data-fn="salvarKey" style="background:#448aff;border:none;color:#fff;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;padding:8px 16px;border-radius:4px;cursor:pointer;">SALVAR</button>
+      <button onclick="window.fecharKeyModal()" style="background:#222;border:none;color:#888;font-family:'Space Mono',monospace;font-size:11px;padding:8px 16px;border-radius:4px;cursor:pointer;">CANCELAR</button>
+      <button onclick="window.salvarKey()" style="background:#448aff;border:none;color:#fff;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;padding:8px 16px;border-radius:4px;cursor:pointer;">SALVAR</button>
     </div>
   </div>
 </div>
@@ -286,8 +286,8 @@ body{background:var(--bg);color:var(--brg);font-family:'Space Mono',monospace;he
     <input id="timer-input" type="text" inputmode="decimal" placeholder="ex: 4.50"
       style="background:#0a0a0a;border:1px solid var(--gold);color:#fff;font-family:'Space Mono',monospace;font-size:24px;padding:10px 14px;border-radius:4px;outline:none;width:100%;text-align:center;">
     <div style="display:flex;gap:8px;justify-content:flex-end;">
-      <button data-fn="fecharTimerModal" style="background:#222;border:none;color:#888;font-family:'Space Mono',monospace;font-size:11px;padding:8px 16px;border-radius:4px;cursor:pointer;flex:1;">CANCELAR</button>
-      <button data-fn="salvarTimer" style="background:var(--gold);border:none;color:#000;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;padding:8px 16px;border-radius:4px;cursor:pointer;flex:1;">SALVAR</button>
+      <button onclick="window.fecharTimerModal()" style="background:#222;border:none;color:#888;font-family:'Space Mono',monospace;font-size:11px;padding:8px 16px;border-radius:4px;cursor:pointer;flex:1;">CANCELAR</button>
+      <button onclick="window.salvarTimer()" style="background:var(--gold);border:none;color:#000;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;padding:8px 16px;border-radius:4px;cursor:pointer;flex:1;">SALVAR</button>
     </div>
   </div>
 </div>
@@ -2133,10 +2133,10 @@ body{background:var(--bg);color:var(--brg);font-family:'Space Mono',monospace;he
 </div>
 <div id="padd">
   <button class="ba dest" id="btn-abrir-imp">📄 IMPORTAR</button>
-  <button class="ba" id="btn-ensaio" data-fn="toggleEnsaio" style="border:1px solid #333;">⏺ ENSAIO</button>
-  <button class="ba" data-fn="exportarHTML" style="background:#1a2a1a;border:1px solid #00e676;color:#00e676;font-weight:700;">💾 SALVAR</button>
-  <button class="ba" data-fn="salvarRascunho" style="background:#1a1a2a;border:1px solid #448aff;color:#448aff;">☁ SALVAR RASCUNHO</button>
-  <button class="ba" data-fn="limparLocal" style="background:#1a0000;border:1px solid #444;color:#555;">🗑 LIMPAR</button>
+  <button class="ba" id="btn-ensaio" onclick="window.toggleEnsaio()" style="border:1px solid #333;">⏺ ENSAIO</button>
+  <button class="ba" onclick="window.exportarHTML()" style="background:#1a2a1a;border:1px solid #00e676;color:#00e676;font-weight:700;">💾 SALVAR</button>
+  <button class="ba" onclick="window.salvarRascunho()" style="background:#1a1a2a;border:1px solid #448aff;color:#448aff;">☁ SALVAR RASCUNHO</button>
+  <button class="ba" onclick="window.limparLocal()" style="background:#1a0000;border:1px solid #444;color:#555;">🗑 LIMPAR</button>
   <div style="width:1px;background:#222;margin:0 4px;"></div>
   <select id="ai-tipo" class="ai" style="width:100px;">
     <option value="fala">💬 FALA</option>
@@ -2144,6 +2144,8 @@ body{background:var(--bg);color:var(--brg);font-family:'Space Mono',monospace;he
   </select>
   <input type="text" id="ai-txt" class="ai" placeholder="Adicionar linha no final..." autocomplete="off"/>
   <button class="ba" id="btn-add">+ ADD</button>
+</div>
+<div id="toast"></div>
 <script>
 'use strict';
 // ── Constantes de cor ──
@@ -2921,18 +2923,11 @@ function toast(m){const t=document.getElementById('toast');t.textContent=m;t.cla
   };
   // Expõe no window para onclicks inline
   Object.assign(window, fnMap);
-  // Listener universal para data-fn buttons
-  document.addEventListener('click', function(e) {
-    const btn = e.target.closest('[data-fn]');
-    if (!btn) return;
-    const fn = fnMap[btn.dataset.fn];
-    if (fn) { e.preventDefault(); e.stopPropagation(); fn(); }
-  });
+  // Funções expostas via window.* acima
   // Inicia
   try { localStorage.removeItem('legenda_espelho_cards'); } catch(e){}
   const ls=gL();
   nt.textContent=ls.length;
   if(ls.length>0)atl();
-})();
-</script>
+})();</script>
 </body></html>
