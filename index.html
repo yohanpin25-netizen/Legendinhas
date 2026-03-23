@@ -2528,39 +2528,71 @@ function importar() {
 
 // ── MICROFONE ──
 document.getElementById('btn-mic').onclick = () => micOn?desligarMic():iniciarMic();
+function normalizar(t){
+  return t.toLowerCase()
+    .normalize('NFD').replace(/[̀-ͯ]/g,'')
+    .replace(/[^a-z0-9 ]/g,'')
+    .trim();
+}
+
 function iniciarMic(){
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   if(!SR){toast('Use Google Chrome');return;}
-  recog=new SR();recog.lang='pt-BR';recog.continuous=true;recog.interimResults=true;
-  let buf='',bufT;
-  recog.onstart=()=>{micOn=true;dm.className='dot pul';sm.textContent='MIC ON';document.getElementById('btn-mic').textContent='🎙 DESLIGAR MIC';};
-  recog.onend=()=>{if(micOn)recog.start();};
-  recog.onerror=ev=>{if(ev.error==='not-allowed'){toast('Microfone bloqueado');desligarMic();}};
+  recog=new SR();
+  recog.lang='pt-BR';
+  recog.continuous=true;
+  recog.interimResults=true;
+  recog.maxAlternatives=3;
+
+  recog.onstart=()=>{
+    micOn=true;
+    dm.className='dot pul';
+    sm.textContent='MIC ON';
+    document.getElementById('btn-mic').textContent='🎙 DESLIGAR MIC';
+  };
+  recog.onend=()=>{ if(micOn) recog.start(); };
+  recog.onerror=ev=>{
+    if(ev.error==='not-allowed'){toast('Microfone bloqueado');desligarMic();}
+    else if(ev.error==='no-speech'){} // ignora silêncio
+    else { if(micOn) setTimeout(()=>recog.start(),300); }
+  };
+
   recog.onresult=ev=>{
-    // Pega TODOS os resultados — intermediários e finais
-    let fala='';
+    // Coleta TODAS as alternativas de TODOS os resultados novos
+    const textos=[];
     for(let i=ev.resultIndex;i<ev.results.length;i++){
-      fala+=ev.results[i][0].transcript;
+      const r=ev.results[i];
+      for(let a=0;a<r.length;a++) textos.push(r[a].transcript);
     }
-    if(!fala.trim()) return;
+    if(!textos.length) return;
+    const fala=textos[0]; // primeira alternativa para improviso
 
     // ── IMPROVISO ──
-    if(imp && fala.trim().length>2){
+    if(imp && fala.trim().length>1){
       tx.style.color='';
       tx.className='imp';
       tx.innerHTML=fala.trim().toUpperCase();
       lbl.textContent='✏ IMPROVISO';
     }
 
-    // ── PALAVRA-CHAVE: dispara no momento que ouve ──
+    // ── PALAVRA-CHAVE ──
+    // Mostra o que o mic ouviu
+    if(!imp) sm.textContent='🎤 '+fala.trim().substring(0,25).toUpperCase();
     if(blq) return;
     const ls=gL(); const el=ls[cur]; if(!el) return;
     const chave=keys[el.id]||'';
     if(!chave) return;
-    if(fala.toLowerCase().includes(chave)){
-      ir(cur+1);
-      blq=true;
-      setTimeout(()=>{blq=false;},600);
+    const chaveNorm=normalizar(chave);
+
+    // Testa todas as alternativas do Chrome
+    for(const txt of textos){
+      const txtNorm=normalizar(txt);
+      if(txtNorm.includes(chaveNorm)){
+        ir(cur+1);
+        blq=true;
+        setTimeout(()=>{ blq=false; },500);
+        return;
+      }
     }
   };
   recog.start();
@@ -2570,6 +2602,18 @@ function norm(t){return t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').
 
 
 // ── Palavra-chave ──
+function melhorPalavra(texto) {
+  // Escolhe a palavra mais única e pronunciável do texto
+  const palavras = normalizar(texto).split(' ')
+    .filter(w => w.length >= 3)
+    .filter(w => !['que','nao','mas','uma','com','por','para','como','isso','este','esta','esse','essa','seu','sua','nos','das','dos','pelo','pela','mais','tem','ter','ser','foi','vai','vou','sao','num','numa'].includes(w));
+  if (!palavras.length) return '';
+  // Prefere palavras de 4-9 caracteres (mais fáceis de reconhecer)
+  const otimas = palavras.filter(w => w.length >= 4 && w.length <= 9);
+  // Retorna a última palavra ótima, ou última palavra disponível
+  return (otimas.pop() || palavras.pop() || '');
+}
+
 function onKey(lid) {
   _keyLid = lid;
   const el   = document.getElementById(lid);
@@ -2577,22 +2621,15 @@ function onKey(lid) {
   const prev = document.getElementById('key-preview');
 
   if (keys[lid]) {
-    // Já tem chave configurada — mostra ela
     inp.value = keys[lid].toUpperCase();
     prev.textContent = 'ATIVO: "' + keys[lid].toUpperCase() + '"';
   } else {
-    // Pré-preenche com a última palavra do card
     const l2 = (el?.dataset.l2 || '').trim();
     const l1 = (el?.dataset.l1 || '').trim();
-    const texto = l2 || l1;  // usa linha 2 se existir, senão linha 1
-    // Pega a última palavra, remove pontuação
-    const ultimaPalavra = texto
-      .split(' ')
-      .filter(w => w.length > 0)
-      .pop() || '';
-    const limpa = ultimaPalavra.replace(/[^a-záéíóúãâêôõçA-ZÁÉÍÓÚÃÂÊÔÕÇ]/gi, '').toLowerCase();
-    inp.value = limpa ? limpa.toUpperCase() : '';
-    prev.textContent = limpa ? 'SUGESTÃO: "' + limpa.toUpperCase() + '"' : '';
+    const texto = (l2 || l1);
+    const sugestao = melhorPalavra(texto);
+    inp.value = sugestao ? sugestao.toUpperCase() : '';
+    prev.textContent = sugestao ? 'SUGESTÃO: "' + sugestao.toUpperCase() + '"' : '';
   }
 
   document.getElementById('modal-key').style.display = 'flex';
